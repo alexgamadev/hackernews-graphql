@@ -20,5 +20,8 @@
   "homepage": "https://github.com/alexgamadev/hackernews-graphql#readme",
   "dependencies": {
     "apollo-server": "^2.21.2"
+  },
+  "devDependencies": {
+    "@prisma/cli": "^2.19.0"
   }
 }
