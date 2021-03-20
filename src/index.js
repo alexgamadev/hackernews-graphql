@@ -1,6 +1,11 @@
 import { ApolloServer } from 'apollo-server';
 import fs, { link } from 'fs';
 
+//Prisma
+import Prisma from '@prisma/client'
+const { PrismaClient } = Prisma
+const prisma = new PrismaClient();
+
 let links = [{
     id: 'link-0',
     url: 'www.howtographql.com',
@@ -54,6 +59,9 @@ const resolvers = {
 const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: {
+        prisma,
+    }
 })
 
 server
