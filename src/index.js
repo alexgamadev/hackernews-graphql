@@ -1,4 +1,6 @@
 import { ApolloServer } from 'apollo-server';
+import fs from 'fs';
+import path from 'path';
 
 let links = [{
     id: 'link-0',
@@ -6,23 +8,27 @@ let links = [{
     description: 'Fullstack tutorial for GraphQL'
   }]
 
-const typeDefs = `
-    type Query {
-        info: String!
-        feed: [Link!]!
-    }
+const typeDefs = fs.readFileSync(
+    new URL('schema.graphql', import.meta.url),
+    'utf8',
+);
 
-    type Link {
-        id: ID!
-        description: String!
-        url: String!
-    }
-`;
-
+let idCount = links.length;
 const resolvers = {
     Query: {
         info: () => `Placeholder info`,
         feed: () => links,
+    },
+    Mutation: {
+        post: (parent, args) => {
+            const link = {
+                id: `link-${idCount++}`,
+                description: args.description,
+                url: args.url,
+            };
+            links.push(link);
+            return link;
+        }
     }
 };
 
