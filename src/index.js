@@ -1,6 +1,5 @@
 import { ApolloServer } from 'apollo-server';
-import fs from 'fs';
-import path from 'path';
+import fs, { link } from 'fs';
 
 let links = [{
     id: 'link-0',
@@ -18,6 +17,9 @@ const resolvers = {
     Query: {
         info: () => `Placeholder info`,
         feed: () => links,
+        link: (parent, args) => {
+            return links.find(link => args.id === link.id);
+        }
     },
     Mutation: {
         post: (parent, args) => {
@@ -28,6 +30,23 @@ const resolvers = {
             };
             links.push(link);
             return link;
+        },
+        updateLink: (parent, args) => {
+            const linkIndex = links.findIndex(link => args.id === link.id);
+            const link = {...links[linkIndex]};
+            link.url = args.url ?? link.url;
+            link.description = args.description ?? link.description;
+            links[linkIndex] = link;
+            return links[linkIndex];
+        },
+        deleteLink: (parent, args) => {
+            const linkIndex = links.findIndex(link => args.id === link.id);
+            if(linkIndex !== -1) {
+                const link = links.splice(linkIndex, 1);
+                console.log(link);
+                return link[0];
+            }
+
         }
     }
 };
